@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:5555
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+exporters:
+  awsemf:
+    region: 'ap-southeast-2'
+    log_group_name: '/metrics/otel'
+    log_stream_name: 'otel-using-java'
+  awsxray:
+    region: 'ap-southeast-2'
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [awsemf]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [awsxray]

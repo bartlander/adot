@@ -1149,13 +1149,11 @@ iOSInjectionProject/
 
 #=============================
 # Custom project excludes
-7zips/
-dep/
-tmp/
 bin/
 obj/
 *.Log
 *.7z
 *.zip
 *.tar
+target/
 #=============================
