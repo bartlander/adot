@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>tutorial.buildon.aws.o11y</groupId>
-    <artifactId>otel-app</artifactId>
+    <artifactId>otel-j-app</artifactId>
     <version>1.0</version>
 
     <properties>

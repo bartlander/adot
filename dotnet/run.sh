@@ -2,39 +2,48 @@
 
 cmd=${1:-usage}
 usage() {
-  echo "$0 b(uild) | c(lean) | i(nit)"
+  echo "$0 b(uild) | c(lean) | x(c+b)"
   exit 0
-}
-i() {
-  echo "docker pull mcr.microsoft.com/dotnet/sdk:6.0"
-  echo "docker pull mcr.microsoft.com/dotnet/samples"
-  echo "docker run -it --rm -p 8000:80 --name aspnetcore_sample mcr.microsoft.com/dotnet/samples:aspnetapp"
-  #dotnet new webapi -o otel-app
-  #dotnet new sln; dotnet sln add otel-app
-  echo "cd otel-app; dotnet restore; dotnet publish -o target"
-  #dotnet publish -c Release -o out
 }
 c() {
   echo "clean..."
-  #docker rm -f otel-app > /dev/null 2>&1
-  docker compose down -v
-  docker image rm otel-app
-  rm -rf target
+  docker rm -f otel-n-app > /dev/null 2>&1
+  docker image rm otel-n-app
+  dotnet clean src/src.sln
+  find . -type d \( -name obj -o -name bin \) -exec rm -rf {} \;
+  #docker compose down -v
+  rm -rf target log
+}
+cc() {
+  c
+  rm -f otel-dotnet-auto-install.sh
+}
+otel-agent() {
+  if [[ ! -e target/otel-dotnet-auto-install.sh ]]; then
+    if [[ -e otel-dotnet-auto-install.sh ]]; then
+      cp otel-dotnet-auto-install.sh target
+    else
+      #tag=v0.7.0
+      gh release download $tag -p otel-dotnet-auto-install.sh --repo open-telemetry/opentelemetry-dotnet-instrumentation --dir target
+      cp target/otel-dotnet-auto-install.sh .
+    fi
+    OTEL_DOTNET_AUTO_HOME="target/otel-dotnet-auto" sh target/otel-dotnet-auto-install.sh
+  fi
 }
 b() {
   echo "build..."
-  #docker rm -f otel-app > /dev/null 2>&1
+  docker rm -f otel-n-app > /dev/null 2>&1
   docker compose down -v
-  if [[ ! -e target/otel-dotnet-auto-install.sh ]]; then
-    curl -L https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v0.7.0/otel-dotnet-auto-install.sh --output target/otel-dotnet-auto-install.sh
-    sh target/otel-dotnet-auto-install.sh
-    cp -r $HOME/.otel-dotnet-auto target
-  fi
-  cd src
-  #dotnet new webapi -o otel-app; dotnet new sln; dotnet sln add otel-app;
-  dotnet restore; dotnet publish -o ../target
-  cd -
+  dotnet publish src/src.sln -o target
+  #dotnet target/otel-n-app.dll --urls "http://localhost:8889"
+  otel-agent
   docker compose up -d
+  #docker exec -it otel-n-app bash
+  #docker cp otel-n-app:/log .
+}
+x() {
+  c
+  b
 }
 
 $cmd
@@ -42,4 +51,4 @@ $cmd
 sleep 2
 docker ps
 echo
-echo curl -X GET http://localhost:8888/hello
+echo ../hello.sh n

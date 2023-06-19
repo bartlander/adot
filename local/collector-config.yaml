@@ -13,7 +13,7 @@ exporters:
   logging:
     loglevel: debug
   prometheus:
-    endpoint: collector:6666
+    endpoint: 0.0.0.0:6666
     namespace: default
   otlp:
     endpoint: tempo:4317

@@ -83,7 +83,7 @@ public class HelloAppController {
 
     @WithSpan
     private Response buildResponse() {
-        return new Response("Hello World");
+        return new Response("Hello Java World");
     }
 
 /*
