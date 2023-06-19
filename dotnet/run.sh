@@ -20,12 +20,13 @@ cc() {
 }
 otel-agent() {
   if [[ ! -e target/otel-dotnet-auto-install.sh ]]; then
-    if [[ -e otel-dotnet-auto-install.sh ]]; then
-      cp otel-dotnet-auto-install.sh target
+    if [[ -e ../tmp/otel-dotnet-auto-install.sh ]]; then
+      cp ../tmp/otel-dotnet-auto-install.sh target
     else
       #tag=v0.7.0
       gh release download $tag -p otel-dotnet-auto-install.sh --repo open-telemetry/opentelemetry-dotnet-instrumentation --dir target
-      cp target/otel-dotnet-auto-install.sh .
+      mkdir -p ../tmp
+      cp target/otel-dotnet-auto-install.sh ../tmp
     fi
     OTEL_DOTNET_AUTO_HOME="target/otel-dotnet-auto" sh target/otel-dotnet-auto-install.sh
   fi
