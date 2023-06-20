@@ -10,10 +10,12 @@ processors:
     send_batch_size: 1024
 
 exporters:
+  logging:
+    loglevel: info
   awsemf:
     region: 'ap-southeast-2'
     log_group_name: '/metrics/otel'
-    log_stream_name: 'otel-using-java'
+    log_stream_name: 'otel'
   awsxray:
     region: 'ap-southeast-2'
 
@@ -22,8 +24,8 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [awsemf]
+      exporters: [logging, awsemf]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [awsxray]
+      exporters: [logging, awsxray]

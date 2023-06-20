@@ -1,0 +1,23 @@
+version: '3.0'
+
+services:
+
+  app:
+    image: aspnetapp:latest
+    container_name: otel-n-test
+    environment: 
+      - AWS_PROFILE=default
+      - AWS_REGION=ap-southeast-2
+      - INSTANCE_ID
+      - LISTEN_ADDRESS=0.0.0.0:8080
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=aws-otel-integ-tst
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:5555
+      - ASPNETCORE_URLS=http://+:8080
+    ports:
+      - '8080:8080'     
+    volumes:
+      - ~/.aws:/root/.aws:ro
+
+networks:
+  default:
+    name: otel

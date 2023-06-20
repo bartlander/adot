@@ -7,8 +7,8 @@ usage() {
 }
 c() {
   echo "clean..."
-  docker rm -f collector > /dev/null 2>&1
-  #docker compose down -v
+  #docker rm -f collector > /dev/null 2>&1
+  docker compose down -v
 }
 cc() {
   c
