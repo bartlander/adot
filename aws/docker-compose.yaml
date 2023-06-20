@@ -1,0 +1,22 @@
+version: '3.0'
+
+services:
+
+  collector:
+    #image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+    image: amazon/aws-otel-collector:latest
+    container_name: collector
+    hostname: collector
+    command: ["--config=/config/collector-config.yaml"]
+    environment:
+      - AWS_PROFILE=default
+      - AWS_REGION=ap-southeast-2
+    volumes:
+      - ./config:/config:ro
+      - ~/.aws:/root/.aws:ro
+    ports:
+      - "5555:5555"
+
+networks:
+  default:
+    name: otel
