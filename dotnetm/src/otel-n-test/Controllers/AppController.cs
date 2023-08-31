@@ -1,5 +1,4 @@
-﻿using Amazon.S3;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net.Http;
 
@@ -9,7 +8,6 @@ namespace otel_n_test.Controllers
     [Route("[controller]")]
     public class AppController : ControllerBase
     {
-        private readonly AmazonS3Client s3Client = new AmazonS3Client();
         private readonly HttpClient httpClient = new HttpClient();
 
         [HttpGet]
@@ -17,15 +15,6 @@ namespace otel_n_test.Controllers
         public string OutgoingHttp()
         {
             _ = httpClient.GetAsync("https://aws.amazon.com").Result;
-
-            return GetTraceId();
-        }
-
-        [HttpGet]
-        [Route("/aws-sdk-call")]
-        public string AWSSDKCall()
-        {
-            _ = s3Client.ListBucketsAsync().Result;
 
             return GetTraceId();
         }

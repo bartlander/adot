@@ -2,22 +2,30 @@ version: '3.0'
 
 services:
 
-  app:
-    image: aspnetapp:latest
+  otel-n-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: otel-n-test:latest
     container_name: otel-n-test
+    hostname: otel-n-test
+#    depends_on:
+#      - collector
+    ports:
+      - "1113:1113"
+    env_file:
+      - otel-agent.env
     environment: 
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=otel-n-testtest,service.version=1.0,deployment.environment=development
+      - OTEL_LOG_LEVEL=debug
+      - OTEL_EXPORTER_OTLP_INSECURE=true
       - AWS_PROFILE=default
       - AWS_REGION=ap-southeast-2
       - INSTANCE_ID
-      - LISTEN_ADDRESS=0.0.0.0:8080
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=aws-otel-integ-tst
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:5555
-      - ASPNETCORE_URLS=http://+:8080
-    ports:
-      - '8080:8080'     
-    volumes:
-      - ~/.aws:/root/.aws:ro
+      - LISTEN_ADDRESS=0.0.0.0:1113
 
 networks:
   default:
-    name: otel
+    name: m2m
+    external: true

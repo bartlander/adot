@@ -13,10 +13,11 @@ services:
         condition: service_healthy
     command: ["--config=/etc/collector-config.yaml"]
     volumes:
-      - ./collector-config.yaml:/etc/collector-config.yaml
+      - ./config/collector-config.yaml:/etc/collector-config.yaml
     ports:
-      - "5555:5555"
-      - "6666:6666"
+      - "8889:8889"   # Prometheus metrics exporter (scrape endpoint)
+      - "13133:13133" # health_check extension
+      - "55679:55679" # ZPages extension
 
   tempo:
     image: grafana/tempo:1.5.0
@@ -24,8 +25,8 @@ services:
     container_name: tempo
     hostname: tempo
     volumes:
-      - ./o11y-backend/tempo-config.yaml:/etc/tempo.yaml
-      - ./o11y-backend/tempo-overrides.yaml:/etc/overrides.yaml
+      - ./backend/tempo-config.yaml:/etc/tempo.yaml
+      - ./backend/tempo-overrides.yaml:/etc/overrides.yaml
 #      - ./tempo-data:/tmp/tempo
     ports:
       - "3200:3200"
@@ -44,7 +45,7 @@ services:
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
     volumes:
-      - ./o11y-backend/prometheus.yaml:/etc/prometheus.yaml
+      - ./backend/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - "9090:9090"
     healthcheck:
@@ -62,8 +63,8 @@ services:
       prometheus:
         condition: service_healthy
     volumes:
-      - ./o11y-backend/grafana-bootstrap.ini:/etc/grafana/grafana.ini
-      - ./o11y-backend/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./backend/grafana-bootstrap.ini:/etc/grafana/grafana.ini
+      - ./backend/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -77,4 +78,5 @@ services:
 
 networks:
   default:
-    name: otel
+    name: m2m
+    external: true

@@ -7,4 +7,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
 COPY target .
 
-ENTRYPOINT ["dotnet", "otel-n-app.dll", "--urls", "http://0.0.0.0:8889" ]
+ENTRYPOINT ["dotnet", "otel-n-app.dll", "--urls", "http://0.0.0.0:1112" ]
