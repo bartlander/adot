@@ -15,8 +15,10 @@ services:
       - ./config:/config:ro
       - ~/.aws:/root/.aws:ro
     ports:
-      - "5555:5555"
+      - "4317:4317"
+      - "4318:4318"
 
 networks:
   default:
-    name: otel
+    name: m2m
+    external: true

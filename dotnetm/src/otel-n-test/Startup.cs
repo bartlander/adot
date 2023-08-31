@@ -28,7 +28,7 @@ namespace otel_n_test
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             Sdk.CreateTracerProviderBuilder()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("aws-otel-i-tst").AddTelemetrySdk())
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("otel-n-test").AddTelemetrySdk())
                 .AddXRayTraceId()
                 .AddAWSInstrumentation()
                 .AddAspNetCoreInstrumentation()

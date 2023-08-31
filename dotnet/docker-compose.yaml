@@ -12,25 +12,17 @@ services:
 #    depends_on:
 #      - collector
     ports:
-      - "8889:8889"
+      - "1112:1112"
     env_file:
       - otel-agent.env
     environment:
-      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
-      - OTEL_TRACES_EXPORTER=otlp
-      - OTEL_METRICS_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:5555
-      - OTEL_TRACES_SAMPLER=always_on
-      - OTEL_IMR_EXPORT_INTERVAL=5000
-      - OTEL_METRIC_EXPORT_INTERVAL=5000
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=otel-n-app,service.version=1.0,deployment.environment=development
-      - OTEL_LOG_LEVEL=debug
-      - OTEL_EXPORTER_OTLP_INSECURE=true
+      - OTEL_SERVICE_NAME=otel-n-app
     healthcheck:
       interval: 5s
       retries: 10
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8889/hello || exit 1
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:1112/hello || exit 1
 
 networks:
   default:
-    name: otel
+    name: m2m
+    external: true

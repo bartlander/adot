@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#https://github.com/aws-observability/aws-otel-dotnet/tree/main/integration-test-app
-
 cmd=${1:-usage}
 usage() {
   echo "$0 b(uild) | c(lean) | x(c+b)"
@@ -13,7 +11,9 @@ c() {
 }
 cc() {
   c
-  docker rm -f otel-n-test; docker image rm -f aspnetapp; docker image prune -f
+  echo "docker rm -f collector grafana prometheus tempo"
+  docker rm -f collector grafana prometheus tempo > /dev/null 2>&1
+  docker image prune -f
 }
 i() {
     docker network inspect m2m > /dev/null 2>&1 || {
@@ -23,8 +23,7 @@ i() {
 }
 b() {
   echo "build..."
-  docker build -t aspnetapp .
-  docker-compose up -d
+  docker compose up -d
 }
 x() {
   c
@@ -36,3 +35,4 @@ $cmd
 
 sleep 2
 docker ps
+echo docker logs collector -f
